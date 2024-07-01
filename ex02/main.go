@@ -1,7 +1,7 @@
 package main
 
 import (
-	"ex02/ft"
+	"ft"
 	"os"
 )
 
@@ -28,7 +28,7 @@ func ft_putstrnl(str string) {
 // whether byte array contains ascii or unicode without using unicode package
 func main() {
 	if ft_len(os.Args) != 2 {
-		ft_putstrnl("too many arguments")
+		ft_putstrnl("wrong arguments number")
 		return
 	}
 	contents, err := os.ReadFile(os.Args[1])

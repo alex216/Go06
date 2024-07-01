@@ -1,7 +1,7 @@
 package main
 
 import (
-	"ex00/ft"
+	"ft"
 	"os"
 )
 
@@ -15,8 +15,15 @@ const (
 	OddMsg          = "I have an odd number of arguments"
 )
 
-func even(nbr int) int { return 1 - nbr % 2 }
-func ft_len(args []string) int { count := 0;for range args { count++ } ;return count }
+func even(nbr int) int { return 1 - nbr%2 }
+func ft_len(args []string) int {
+	count := 0
+	for range args {
+		count++
+	}
+	return count
+}
+
 var lengthOfArg = ft_len(os.Args[1:])
 
 //////////////////////////////////////////
