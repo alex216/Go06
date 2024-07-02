@@ -7,7 +7,7 @@ import (
 )
 
 func validateArgs() (int64, int) {
-	if piscine.FtLen(os.Args) < 3 {
+	if piscine.FtLen(os.Args) < 4 {
 		return -1, 1
 	}
 	if piscine.Strcmp(os.Args[1], "-c") != 0 {
@@ -23,14 +23,14 @@ func validateArgs() (int64, int) {
 func displayFileAtC(file *os.File, c int64) {
 	file_size, err := file.Stat()
 	if err != nil {
-		piscine.FtPutStrLn("ERROR: " + err.Error())
+		piscine.FtPutStrLn(err.Error())
 		return
 	}
 	filesize := file_size.Size()
 	buf := make([]byte, c)
 	n, err := file.ReadAt(buf, piscine.FtMax(0, filesize-c))
 	if err != nil && err.Error() != "EOF" {
-		piscine.FtPutStrLn("ERROR: " + err.Error())
+		piscine.FtPutStrLn(err.Error())
 		return
 	}
 	piscine.FtPutStr(string(buf[:n]))
@@ -41,34 +41,25 @@ func ztail() (res int) {
 	if err == 1 {
 		return
 	}
-	if piscine.FtLen(os.Args) == 3 {
-		buf := make([]byte, 1024)
-		n, err := os.Stdin.Read(buf)
-		if err != nil || n == 0 {
-			return
-		}
-		piscine.FtPutStr(string(buf[:n]))
-	} else {
-		filenum := piscine.FtLen(os.Args[3:])
-		for _, filename := range os.Args[3:] {
-			validfilenum := 0
-			file, err := os.Open(filename)
-			if err != nil {
-				piscine.FtPutStrLn(err.Error())
-				defer func() {
-					res = 1
-				}()
-			} else {
-				defer file.Close()
-				if filenum > 1 {
-					if validfilenum == 1 {
-						ft.PrintRune('\n')
-					}
-					piscine.FtPutStr("==> " + filename + " <==\n")
+	filenum := piscine.FtLen(os.Args[3:])
+	for _, filename := range os.Args[3:] {
+		validfilenum := 0
+		file, err := os.Open(filename)
+		if err != nil {
+			piscine.FtPutStrLn(err.Error())
+			defer func() {
+				res = 1
+			}()
+		} else {
+			defer file.Close()
+			if filenum > 1 {
+				if validfilenum == 1 {
+					ft.PrintRune('\n')
 				}
-				displayFileAtC(file, c)
-				validfilenum = 1
+				piscine.FtPutStr("==> " + filename + " <==\n")
 			}
+			displayFileAtC(file, c)
+			validfilenum = 1
 		}
 	}
 	return 0

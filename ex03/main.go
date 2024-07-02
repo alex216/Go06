@@ -42,8 +42,9 @@ func main() {
 			}
 			ftPutStr(string(buf[:n]))
 		}
-	}
-	for _, filename := range os.Args[1:] {
-		displayFile(filename)
+	} else {
+		for _, filename := range os.Args[1:] {
+			displayFile(filename)
+		}
 	}
 }
