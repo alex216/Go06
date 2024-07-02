@@ -3,92 +3,72 @@ package main
 import (
 	"ft"
 	"os"
+	"piscine"
 )
 
-func ftLen(args []string) int {
-	i := 0
-	for range args {
-		i++
+func validateArgs() (int64, int) {
+	if piscine.FtLen(os.Args) < 3 {
+		return -1, 1
 	}
-	return i
-}
-
-func ftPutStr(str string) {
-	for _, c := range str {
-		ft.PrintRune(c)
+	if piscine.Strcmp(os.Args[1], "-c") != 0 {
+		return -1, 1
 	}
-}
-
-func ftPutStrLn(str string) {
-	ftPutStr(str)
-	ft.PrintRune('\n')
-}
-
-func ftMax(a, b int64) int64 {
-	if a > b {
-		return a
+	c := int64(piscine.Atoi(os.Args[2]))
+	if c == -1 {
+		return -1, 1
 	}
-	return b
-}
-
-func atoi(s string) int {
-	ans := 0
-	for _, c := range s {
-		if c < '0' || c > '9' {
-			return -1
-		}
-		ans = ans*10 + int(c-'0')
-	}
-	return ans
+	return c, 0
 }
 
 func displayFileAtC(file *os.File, c int64) {
 	file_size, err := file.Stat()
 	if err != nil {
-		ftPutStrLn("ERROR: " + err.Error())
+		piscine.FtPutStrLn("ERROR: " + err.Error())
 		return
 	}
 	filesize := file_size.Size()
 	buf := make([]byte, c)
-	n, err := file.ReadAt(buf, ftMax(0, filesize-c))
+	n, err := file.ReadAt(buf, piscine.FtMax(0, filesize-c))
 	if err != nil && err.Error() != "EOF" {
-		ftPutStrLn("ERROR: " + err.Error())
+		piscine.FtPutStrLn("ERROR: " + err.Error())
 		return
 	}
-	ftPutStr(string(buf[:n]))
+	piscine.FtPutStr(string(buf[:n]))
 }
 
 func ztail() (res int) {
-	c := int64(atoi(os.Args[2]))
-	if c == -1 {
+	c, err := validateArgs()
+	if err == 1 {
 		return
 	}
-	if ftLen(os.Args) == 3 {
+	if piscine.FtLen(os.Args) == 3 {
 		buf := make([]byte, 1024)
 		n, err := os.Stdin.Read(buf)
 		if err != nil || n == 0 {
 			return
 		}
-		ftPutStr(string(buf[:n]))
+		piscine.FtPutStr(string(buf[:n]))
 	} else {
-		filenum := ftLen(os.Args[3:])
-		for idx, filename := range os.Args[3:] {
+		filenum := piscine.FtLen(os.Args[3:])
+		for _, filename := range os.Args[3:] {
+			validfilenum := 0
 			file, err := os.Open(filename)
 			if err != nil {
-				ftPutStrLn("ERROR: " + err.Error())
+				piscine.FtPutStrLn(err.Error())
 				defer func() {
 					res = 1
 				}()
-				continue
-			}
-			defer file.Close()
-			if filenum > 1 {
-				if idx != 0 {
-					ft.PrintRune('\n')
+			} else {
+				defer file.Close()
+				if filenum > 1 {
+					if validfilenum == 1 {
+						ft.PrintRune('\n')
+					}
+					piscine.FtPutStr("==> " + filename + " <==\n")
 				}
-				ftPutStr("==> " + filename + " <==\n")
+				displayFileAtC(file, c)
+				validfilenum = 1
 			}
-			displayFileAtC(file, c)
 		}
 	}
 	return 0
