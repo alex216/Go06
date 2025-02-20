@@ -34,9 +34,9 @@ func displayFile(filename string) {
 
 func main() {
 	if ftLen(os.Args) == 1 {
-		buf := make([]byte, 42)
+		var buf [42]byte
 		for {
-			n, err := os.Stdin.Read(buf)
+			n, err := os.Stdin.Read(buf[:])
 			if err != nil || n == 0 {
 				return
 			}
