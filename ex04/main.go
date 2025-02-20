@@ -21,11 +21,13 @@ func validateArgs() (int64, int) {
 }
 
 func displayFileAtC(file *os.File, c int64) {
+
 	file_size, err := file.Stat()
 	if err != nil {
 		piscine.FtPutStrLn(err.Error())
 		return
 	}
+
 	filesize := file_size.Size()
 	buf := make([]byte, c)
 	n, err := file.ReadAt(buf, piscine.FtMax(0, filesize-c))
@@ -37,12 +39,14 @@ func displayFileAtC(file *os.File, c int64) {
 }
 
 func ztail() (res int) {
+
 	c, err := validateArgs()
 	if err == 1 {
 		return
 	}
+
 	filenum := piscine.FtLen(os.Args[3:])
-	for _, filename := range os.Args[3:] {
+	for i, filename := range os.Args[3:] {
 		validfilenum := 0
 		file, err := os.Open(filename)
 		if err != nil {
@@ -53,7 +57,7 @@ func ztail() (res int) {
 		} else {
 			defer file.Close()
 			if filenum > 1 {
-				if validfilenum == 1 {
+				if i > 0 || validfilenum == 1 {
 					ft.PrintRune('\n')
 				}
 				piscine.FtPutStr("==> " + filename + " <==\n")
