@@ -27,10 +27,16 @@ func ft_putstrnl(str string) {
 // unicode not supported if use os.Open then os.Read since it's difficult even tenious to check
 // whether byte array contains ascii or unicode without using unicode package
 func main() {
+
 	if ft_len(os.Args) != 2 {
-		ft_putstrnl("wrong arguments number")
+		if ft_len(os.Args) == 1 {
+			ft_putstrnl("File name missing")
+		} else {
+			ft_putstrnl("Too many arguments")
+		}
 		return
 	}
+
 	contents, err := os.ReadFile(os.Args[1])
 	if err != nil {
 		ft_putstrnl("file open error")
